@@ -12,6 +12,7 @@ import { SavePass } from "three/examples/jsm/postprocessing/SavePass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { BlendShader } from "three/examples/jsm/shaders/BlendShader.js";
 import { CopyShader } from "three/examples/jsm/shaders/CopyShader.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 import vertexPars from "@/shaders/vertex_parse.glsl?raw";
 import vertexMain from "@/shaders/vertex_main.glsl?raw";
@@ -26,13 +27,13 @@ const startApp = () => {
   const { width, height } = useRenderSize();
 
   // settings
-  const MOTION_BLUR_AMOUNT = 0.725;
+  const MOTION_BLUR_AMOUNT = 0.125;
 
   // lighting
-  const dirLight = new THREE.DirectionalLight("#ffffff", 0.75);
-  dirLight.position.set(5, 5, 5);
+  const dirLight = new THREE.DirectionalLight("#526cff", 0.6);
+  dirLight.position.set(2, 2, 2);
 
-  const ambientLight = new THREE.AmbientLight("#ffffff", 0.2);
+  const ambientLight = new THREE.AmbientLight("#4255ff", 0.5);
   scene.add(dirLight, ambientLight);
 
   // meshes
@@ -62,7 +63,7 @@ const startApp = () => {
       mainVertexString + vertexMain
     );
 
-    // // fragment shader
+    //! fragment shader
     // const mainFragmentString = /* glsl */ `#include <normal_fragment_maps>`;
     // const parsFragmentString = /* glsl */ `#include <bumpmap_pars_fragment>`;
     // shader.fragmentShader = shader.fragmentShader.replace(
@@ -74,8 +75,6 @@ const startApp = () => {
     //   mainFragmentString,
     //   mainFragmentString + fragmentMain
     // );
-
-    console.log(shader.fragmentShader);
   };
 
   const ico = new THREE.Mesh(geometry, material);
@@ -111,6 +110,7 @@ const startApp = () => {
   addPass(blendPass);
   addPass(savePass);
   addPass(outputPass);
+  addPass(new UnrealBloomPass(new THREE.Vector2(width, height), 0.7, 0.4, 0.4));
 
   useTick(({ timestamp }) => {
     const time = timestamp / 10000;
